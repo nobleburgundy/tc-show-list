@@ -6,6 +6,11 @@ export function todayCentral(now = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(now);
 }
 
+// "2026-11-04" + 1 -> "2026-11-05"
+export function addDays(iso, n) {
+  return new Date(Date.parse(`${iso}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
+}
+
 // "2026-11-04" -> "Wednesday, November 4"
 export function longDate(iso) {
   return new Intl.DateTimeFormat('en-US', {

@@ -1,4 +1,4 @@
-// Reads data/shows.json and writes dist/: index.html and settings.html.
+// Reads data/shows.json and writes dist/: index.html (today), tomorrow.html and settings.html.
 // Everything is fixed-width text like gopher_plain, but built from real headings and
 // lists (laid out with CSS) so it reads well with screen readers and wraps cleanly.
 import fs from 'node:fs/promises';
@@ -39,8 +39,8 @@ ${v.shows.map(showHtml).join('\n')}
 }
 
 
-function page({ title, current, date, body, footer, script = '' }) {
-  const nav = [['./', 'Today'], ['settings.html', 'Settings']].map(([href, label]) => (label === current
+function page({ title, current, date, offset, body, footer, script = '' }) {
+  const nav = [['./', 'Today'], ['tomorrow.html', 'Tomorrow'], ['settings.html', 'Settings']].map(([href, label]) => (label === current
     ? `<a href="${href}" aria-current="page"><b>${label}</b></a>`
     : `<a href="${href}">${label}</a>`)).join('');
 
@@ -59,7 +59,7 @@ function page({ title, current, date, body, footer, script = '' }) {
 <div class="row"><h1><a href="./">${esc(SITE.title.toUpperCase())}</a></h1>${date ? `<span>${esc(shortDate(date))}</span>` : ''}</div>
 <nav aria-label="Pages">${nav}</nav>
 </header>
-<main${date ? ` data-date="${esc(date)}"` : ''}>
+<main${date ? ` data-date="${esc(date)}" data-offset="${offset}"` : ''}>
 ${body}
 </main>
 <footer>${footer}</footer>
@@ -70,36 +70,48 @@ ${script}</body>
 
 const readScript = (name) => fs.readFile(path.join(STATIC, 'js', name), 'utf8');
 
-async function main() {
-  const data = JSON.parse(await fs.readFile(path.join(DATA, 'shows.json'), 'utf8'));
-  // Venues with no shows today aren't listed at all.
-  const withShows = data.venues.filter((v) => v.shows?.length);
-  const failed = data.venues.filter((v) => v.error);
+// One day's page (Today or Tomorrow). Venues with no shows that day aren't listed.
+function dayPage({ date, venues }, { label, offset, fetchedAt, script }) {
+  const withShows = venues.filter((v) => v.shows?.length);
+  const failed = venues.filter((v) => v.error);
   const total = withShows.reduce((n, v) => n + v.shows.length, 0);
 
   const footer = [
     `${plural(total, 'show')} at ${plural(withShows.length, 'venue')}`,
     // Say which venues couldn't be checked, so "not listed" never quietly means "broken".
     failed.length ? `Couldn't check: ${failed.map((v) => esc(v.name)).join(', ')}` : '',
-    `Updated ${esc(updatedLabel(data.fetchedAt))}`,
+    `Updated ${esc(updatedLabel(fetchedAt))}`,
   ].filter(Boolean).join('<br>');
 
-  const index = page({
-    title: `${SITE.title}: ${longDate(data.date)}`,
-    current: 'Today',
-    date: data.date,
-    body: withShows.length ? withShows.map(venueHtml).join('\n') : '<p>No shows listed today.</p>',
-    footer,
-    script: `<script>\n${await readScript('today.js')}</script>\n`,
-  });
+  return {
+    total,
+    html: page({
+      title: `${SITE.title}: ${longDate(date)}`,
+      current: label,
+      date,
+      offset,
+      body: withShows.length ? withShows.map(venueHtml).join('\n') : `<p>No shows listed ${label.toLowerCase()}.</p>`,
+      footer,
+      script,
+    }),
+  };
+}
 
-  const venues = data.venues.map((v) => ({ id: v.id, name: v.name, area: v.area }));
+async function main() {
+  const data = JSON.parse(await fs.readFile(path.join(DATA, 'shows.json'), 'utf8'));
+  const [today, tomorrow] = data.days;
+  const script = `<script>\n${await readScript('day.js')}</script>\n`;
+  const opts = { fetchedAt: data.fetchedAt, script };
+  const index = dayPage(today, { ...opts, label: 'Today', offset: 0 });
+  const next = dayPage(tomorrow, { ...opts, label: 'Tomorrow', offset: 1 });
+
+  const venues = today.venues.map((v) => ({ id: v.id, name: v.name, area: v.area }));
   const settings = page({
     title: `${SITE.title}: Settings`,
     current: 'Settings',
     body: `<section>
 <h2>VENUE ORDER</h2>
-<p class="hint">Drag venues by the <span aria-hidden="true">≡</span> handle to set the order on the Today page.</p>
+<p class="hint">Drag venues by the <span aria-hidden="true">≡</span> handle to set the order on the Today and Tomorrow pages.</p>
 <p id="keys" class="sr-only">Use the up and down arrow keys to move this venue. Home and End move it to the top or bottom.</p>
 <p id="nojs">This page needs JavaScript turned on.</p>
 <ol id="order" class="sortable" hidden></ol>
@@ -112,10 +124,11 @@ async function main() {
 
   await fs.rm(OUT, { recursive: true, force: true });
   await fs.mkdir(OUT, { recursive: true });
-  await fs.writeFile(path.join(OUT, 'index.html'), index);
+  await fs.writeFile(path.join(OUT, 'index.html'), index.html);
+  await fs.writeFile(path.join(OUT, 'tomorrow.html'), next.html);
   await fs.writeFile(path.join(OUT, 'settings.html'), settings);
   for (const f of ['style.css', 'favicon.svg']) await fs.copyFile(path.join(STATIC, f), path.join(OUT, f));
-  console.log(`Built dist/ with ${total} shows`);
+  console.log(`Built dist/: ${index.total} shows today, ${next.total} tomorrow`);
 }
 
 main().catch((err) => {

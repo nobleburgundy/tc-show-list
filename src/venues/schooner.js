@@ -7,6 +7,7 @@ import { readListings, monthOf } from '../sources/listings.js';
 import { longDate } from '../format.js';
 
 const URL = 'https://www.schoonertavern.com/live-music';
+let warned = false;
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
   'august', 'september', 'october', 'november', 'december'];
 
@@ -21,7 +22,8 @@ export default {
     const months = new Set(all.map((s) => monthOf(s.date)));
 
     const poster = await posterMonth().catch(() => null);
-    if (poster && !months.has(poster)) {
+    if (poster && !months.has(poster) && !warned) {
+      warned = true;
       console.warn(`  Schooner: poster for ${poster} is up; add it to listings/schooner.txt`);
     }
 

@@ -1,4 +1,4 @@
-// Runs at the end of the Today page. Inlined into index.html by the build.
+// Runs at the end of the Today and Tomorrow pages. Inlined by the build.
 (function () {
   var main = document.querySelector('main');
 
@@ -32,13 +32,16 @@
   }
   var now = centralNow();
 
-  // 2. If the list is from an earlier day (a build failed), say so plainly.
+  // 2. If the list isn't for the day this page is meant to show (e.g. a build failed
+  //    overnight), say so plainly. data-offset is 0 on Today, 1 on Tomorrow.
   var built = main.dataset.date;
-  if (built && built !== now.slice(0, 10)) {
+  var offset = Number(main.dataset.offset || 0);
+  var expected = new Date(Date.parse(now.slice(0, 10) + 'T12:00:00Z') + offset * 864e5).toISOString().slice(0, 10);
+  if (built && built !== expected) {
     var warn = document.createElement('p');
     warn.className = 'stale';
     warn.textContent = 'This list is for ' + document.querySelector('header .row span').textContent
-      + ', not today. It will update soon.';
+      + ', not ' + (offset ? 'tomorrow' : 'today') + '. It will update soon.';
     main.insertBefore(warn, main.firstChild);
     return;
   }

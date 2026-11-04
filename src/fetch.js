@@ -1,16 +1,14 @@
-// Gets today's shows from every venue and saves them to data/shows.json.
-// One venue failing doesn't stop the rest; it's shown as unavailable instead.
+// Gets today's and tomorrow's shows from every venue and saves them to data/shows.json.
+// One venue failing doesn't stop the rest; the page names it in the footer instead.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { VENUES } from './venues/index.js';
-import { todayCentral } from './format.js';
+import { todayCentral, addDays } from './format.js';
 
 const DATA = path.resolve('data');
 
-async function main() {
-  const date = todayCentral();
+async function venuesOn(date) {
   console.log(`Shows for ${date}`);
-
   const venues = [];
   for (const v of VENUES) {
     const entry = { id: v.id, name: v.name, area: v.area, url: v.url, shows: [], notice: null, error: null };
@@ -27,12 +25,19 @@ async function main() {
     }
     venues.push(entry);
   }
+  return venues;
+}
 
-  if (venues.every((v) => v.error)) throw new Error('Every venue failed; keeping the old data');
+async function main() {
+  const today = todayCentral();
+  const days = [];
+  for (const date of [today, addDays(today, 1)]) days.push({ date, venues: await venuesOn(date) });
+
+  if (days[0].venues.every((v) => v.error)) throw new Error('Every venue failed; keeping the old data');
 
   await fs.mkdir(DATA, { recursive: true });
   await fs.writeFile(path.join(DATA, 'shows.json'),
-    JSON.stringify({ date, fetchedAt: new Date().toISOString(), venues }, null, 2));
+    JSON.stringify({ fetchedAt: new Date().toISOString(), days }, null, 2));
 }
 
 main().catch((err) => {
