@@ -1,0 +1,19 @@
+{
+  "name": "tc-show-list",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plain-text list of today's shows at Twin Cities venues",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "fetch": "node src/fetch.js",
+    "build": "node src/build.js",
+    "all": "node src/fetch.js && node src/build.js",
+    "serve": "node src/serve.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}

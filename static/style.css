@@ -1,0 +1,122 @@
+:root {
+  color-scheme: light dark;
+  --bg: #fff;
+  --fg: #1d1d1d;
+  --muted: #6b6b6b;
+  --rule: #d6d6d6;
+  --link: #1f5f3a; /* pub green */
+  --hi: #e9f3ec; /* dragged row */
+  --warn-bg: #fff4d6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141414;
+    --fg: #e8e6e1;
+    --muted: #9a9a9a;
+    --rule: #333;
+    --link: #8fd19e;
+    --hi: #1f2e23;
+    --warn-bg: #3a3215;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0 auto;
+  padding: 16px;
+  max-width: calc(44ch + 32px);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Courier New", Courier, monospace;
+  /* Shrink the text on narrow phones so 44 columns (26.4em in Courier) always fit. */
+  font-size: clamp(11px, calc((100vw - 32px) / 26.4), 15px);
+  line-height: 1.35;
+}
+
+h1, h2, p, ul, ol { margin: 0; padding: 0; font: inherit; }
+ul, ol { list-style: none; }
+b, h1, h2 { font-weight: 700; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 1px; }
+
+/* Left and right text on one line, like "BERLIN ......... Minneapolis". */
+.row { display: flex; justify-content: space-between; gap: 1ch; }
+.row > :first-child { min-width: 0; }
+.area { font-weight: 400; white-space: nowrap; }
+
+header { border-bottom: 1px solid var(--muted); padding-bottom: .5em; margin-bottom: 1.35em; }
+nav a { display: inline-block; padding: 6px 0; margin-right: 2ch; } /* taller tap target */
+
+footer { color: var(--muted); border-top: 1px solid var(--muted); padding-top: .5em; margin-top: 1.35em; }
+
+section + section { margin-top: 1.35em; }
+
+/* One show: time in an 8-column gutter, title wraps under itself. */
+.show { display: grid; grid-template-columns: 8ch 1fr; }
+.show .what { min-width: 0; }
+.note { display: block; color: var(--muted); }
+.notice { color: var(--muted); }
+.show.cancelled a { text-decoration: line-through; }
+.show.past, .show.past a { color: var(--muted); }
+
+
+.stale { background: var(--warn-bg); padding: .35em 1ch; margin-bottom: 1.35em; }
+
+/* Settings */
+.hint { color: var(--muted); margin: .2em 0 .8em; }
+
+.sortable { border-top: 1px solid var(--rule); margin-bottom: .8em; user-select: none; -webkit-user-select: none; }
+.sortable li {
+  display: grid;
+  grid-template-columns: 4ch 3ch 1fr auto;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+  cursor: grab;
+}
+.sortable .handle {
+  font: inherit;
+  font-size: 1.3em;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: .55em 0; /* rows are ~40px tall: easy to grab on a phone */
+  align-self: stretch;
+  text-align: left;
+  cursor: grab;
+  touch-action: none; /* dragging the handle doesn't scroll the page */
+}
+.sortable .num { color: var(--muted); }
+.sortable .area { color: var(--muted); }
+.sortable li.dragging { background: var(--hi); outline: 1px solid var(--link); cursor: grabbing; position: relative; z-index: 1; }
+.is-dragging, .is-dragging * { cursor: grabbing !important; }
+
+button.link {
+  font: inherit;
+  color: var(--link);
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  margin: 0;
+  cursor: pointer;
+}
+button.link:hover { text-decoration: underline; }
+button.link:disabled { color: var(--muted); opacity: .5; cursor: default; text-decoration: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+[hidden] { display: none !important; }
+
+@media (min-width: 640px) {
+  body { padding-top: 32px; }
+}

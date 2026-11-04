@@ -1,0 +1,36 @@
+# Schooner Tavern shows, typed in from the monthly poster at
+# https://www.schoonertavern.com/live-music (they only post it as an image).
+#
+# One show per line:   date  time  acts
+#   - time is like 7pm, 7:30pm or 8-11:30pm (only the start time is shown)
+#   - put " / " between acts on the same bill
+# Lines starting with # are ignored. Old months can be deleted any time.
+
+# ---- November 2026 ----
+2026-11-01  5-7pm         Church of Cornbread
+2026-11-01  7:30-10:30pm  Schooner Music Jam
+2026-11-04  7-10pm        Connor McCrae Trio
+2026-11-05  7-10pm        Retrofizz / Chicks & Trogs
+2026-11-06  8-11:30pm     Thunderheads
+2026-11-07  8-11:30pm     Erin McCawley's Harrison Street Band
+2026-11-08  5-7pm         Church of Cornbread
+2026-11-08  7:30-10:30pm  Schooner Music Jam
+2026-11-11  7-10pm        Customers Band / The Cockroachers
+2026-11-12  7-10pm        Edie Rae Band / The Driftless Area
+2026-11-13  8-11:30pm     Capital Sons / The Gated Community
+2026-11-14  8-11:30pm     Trailer Trash
+2026-11-15  5-7pm         Church of Cornbread
+2026-11-15  7:30-10:30pm  Schooner Music Jam
+2026-11-18  7-10pm        The Swamp Poppas
+2026-11-19  7-10pm        Mubbla Buggs / Danger Pins
+2026-11-20  8-11:30pm     Just Luv Inc. / Kinda Kinky
+2026-11-21  8-11:30pm     Jiggs Lee Invasion
+2026-11-22  5-7pm         Church of Cornbread
+2026-11-22  7:30-10:30pm  Schooner Music Jam
+2026-11-25  7-10pm        BZ3 Organ Trio
+2026-11-26  7-10pm        Scott Allen & The List / The Silverteens
+2026-11-27  8-11:30pm     Jimmi & The Band of Souls
+2026-11-28  8-11:30pm     Hurricane Harold's All Star Revue
+2026-11-29  5-7pm         Church of Cornbread
+2026-11-29  7:30-10:30pm  Schooner Music Jam
+2026-11-30  7:30-10:30pm  Metal Monday
