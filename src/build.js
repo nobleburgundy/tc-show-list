@@ -52,7 +52,12 @@ function page({ title, current, date, offset, body, footer, script = '' }) {
 <title>${esc(title)}</title>
 <meta name="description" content="Today's shows at Twin Cities venues, in plain text.">
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="TC Shows">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
 </head>
 <body>
 <header>
@@ -127,7 +132,8 @@ async function main() {
   await fs.writeFile(path.join(OUT, 'index.html'), index.html);
   await fs.writeFile(path.join(OUT, 'tomorrow.html'), next.html);
   await fs.writeFile(path.join(OUT, 'settings.html'), settings);
-  for (const f of ['style.css', 'favicon.svg']) await fs.copyFile(path.join(STATIC, f), path.join(OUT, f));
+  const files = ['style.css', 'favicon.svg', 'favicon.ico', 'favicon-32.png', 'apple-touch-icon.png'];
+  for (const f of files) await fs.copyFile(path.join(STATIC, f), path.join(OUT, f));
   console.log(`Built dist/: ${index.total} shows today, ${next.total} tomorrow`);
 }
 
