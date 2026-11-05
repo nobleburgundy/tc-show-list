@@ -11,10 +11,12 @@ import icehouse from './icehouse.js';
 import metronome from './metronome.js';
 import parkway from './parkway.js';
 import schooner from './schooner.js';
+import uptownvfw from './uptownvfw.js';
+import volsteads from './volsteads.js';
 import whitesquirrel from './whitesquirrel.js';
 
 const sortName = (v) => v.name.replace(/^the\s+/i, '').toLowerCase();
 
 export const VENUES = [
-  amsterdam, berlin, club331, dubliner, icehouse, metronome, parkway, schooner, whitesquirrel,
+  amsterdam, berlin, club331, dubliner, icehouse, metronome, parkway, schooner, uptownvfw, volsteads, whitesquirrel,
 ].sort((a, b) => sortName(a).localeCompare(sortName(b), 'en', { numeric: true }));
