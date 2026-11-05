@@ -28,6 +28,7 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0 auto;
   padding: 16px;
+  padding-top: 28px; /* a little room below the phone's status bar */
   max-width: calc(44ch + 32px);
   background: var(--bg);
   color: var(--fg);
