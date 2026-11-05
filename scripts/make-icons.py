@@ -1,4 +1,4 @@
-"""Builds the site icons in static/ from the microphone drawings in assets/.
+"""Builds the site icons in static/ from the guitar + skyline drawings in assets/.
 Run from the project root after editing the art: python3 scripts/make-icons.py
 Needs Pillow and Google Chrome (used to turn the SVGs into PNGs)."""
 import os

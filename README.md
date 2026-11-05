@@ -12,7 +12,7 @@ npm run serve   # preview at http://localhost:8080
 
 **Schooner Tavern:** they only post a monthly poster image, so type each month into `listings/schooner.txt`. The fetch log warns when a new one is up.
 
-**Icons:** the microphone art is in `assets/`. After editing it, run `python3 scripts/make-icons.py` (needs Pillow and Chrome).
+**Icons:** the guitar + skyline art is in `assets/`. After editing it, run `python3 scripts/make-icons.py` (needs Pillow and Chrome).
 
 **Deploy:** push to `main` and set **Settings → Pages → Source** to **GitHub Actions**. It rebuilds just after midnight and four times during the day.
 
